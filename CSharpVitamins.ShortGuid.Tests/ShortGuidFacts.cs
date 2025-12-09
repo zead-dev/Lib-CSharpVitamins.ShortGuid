@@ -2,199 +2,178 @@
 using System;
 using Xunit;
 
-namespace Tests
-{
-    public class ShortGuidFacts
-    {
-        const string SampleGuidString = "c9a646d3-9c61-4cb7-bfcd-ee2522c8f633";
-        static readonly Guid SampleGuid = new Guid(SampleGuidString);
-        const string SampleShortGuidString = "00amyWGct0y_ze4lIsj2Mw";
+namespace CSharpVitamins.Tests;
 
-        /// <summary>
-        /// Literal: c9a646d3-9c61-4cb7-bfcd-ee2522c8f633 and some extra chars.
-        /// </summary>
-        const string LongerBase64String = "YzlhNjQ2ZDMtOWM2MS00Y2I3LWJmY2QtZWUyNTIyYzhmNjMzIGFuZCBzb21lIGV4dHJhIGNoYXJzLg";
+public class ShortGuidFacts {
+    const string SampleGuidString = "c9a646d3-9c61-4cb7-bfcd-ee2522c8f633";
+    static readonly Guid SampleGuid = new Guid(SampleGuidString);
+    const string SampleShortGuidString = "00amyWGct0y_ze4lIsj2Mw";
 
-        /// <summary>
-        /// "bullshitmustnotbevalid" in this case does produce a valid Guid, which when output encodes as correctly
-        /// as "bullshitmustnotbevaliQ".
-        /// </summary>
-        const string InvalidSampleShortGuidString = "bullshitmustnotbevalid";
+    /// <summary>
+    /// Literal: c9a646d3-9c61-4cb7-bfcd-ee2522c8f633 and some extra chars.
+    /// </summary>
+    const string LongerBase64String = "YzlhNjQ2ZDMtOWM2MS00Y2I3LWJmY2QtZWUyNTIyYzhmNjMzIGFuZCBzb21lIGV4dHJhIGNoYXJzLg";
 
-        void assert_instance_equals_samples(ShortGuid instance)
-        {
-            Assert.Equal(SampleShortGuidString, instance.Value);
-            Assert.Equal(SampleGuid, instance.Guid);
-        }
+    /// <summary>
+    /// "bullshitmustnotbevalid" in this case does produce a valid Guid, which when output encodes as correctly
+    /// as "bullshitmustnotbevaliQ".
+    /// </summary>
+    const string InvalidSampleShortGuidString = "bullshitmustnotbevalid";
 
-        [Fact]
-        void ctor_decodes_shortguid_string()
-        {
-            var actual = new ShortGuid(SampleShortGuidString);
+    void assert_instance_equals_samples(ShortGuid instance) {
+        Assert.Equal(SampleShortGuidString, instance.Value);
+        Assert.Equal(SampleGuid, instance.Guid);
+    }
 
-            assert_instance_equals_samples(actual);
-        }
+    [Fact]
+    void ctor_decodes_shortguid_string() {
+        var actual = new ShortGuid(SampleShortGuidString);
 
-        [Fact]
-        void StrictDecode_parses_valid_shortGuid_strict_off()
-        {
-            ShortGuid.Decode(SampleShortGuidString);
-        }
+        assert_instance_equals_samples(actual);
+    }
 
-        [Fact]
-        void StrictDecode_parses_valid_shortGuid_strict_on()
-        {
-            ShortGuid.Decode(SampleShortGuidString);
-        }
+    [Fact]
+    void StrictDecode_parses_valid_shortGuid_strict_off() {
+        ShortGuid.Decode(SampleShortGuidString);
+    }
 
-        [Fact]
-        void Decode_does_not_parse_longer_base64_string()
-        {
-            Assert.Throws<ArgumentException>(
-                () => ShortGuid.Decode(LongerBase64String)
-                );
-        }
+    [Fact]
+    void StrictDecode_parses_valid_shortGuid_strict_on() {
+        ShortGuid.Decode(SampleShortGuidString);
+    }
 
-        [Fact]
-        void StrictDecode_does_not_parse_longer_base64_string()
-        {
-            Assert.Throws<ArgumentException>(
-                () => ShortGuid.Decode(LongerBase64String)
-                );
-        }
+    [Fact]
+    void Decode_does_not_parse_longer_base64_string() {
+        Assert.Throws<ArgumentException>(
+            () => ShortGuid.Decode(LongerBase64String)
+            );
+    }
 
-        [Fact]
-        void invalid_strings_must_not_return_true_on_try_parse_with_strict_true()
-        {
-            // try parse should return false
-            Assert.False(ShortGuid.TryParse(InvalidSampleShortGuidString, out ShortGuid strictSguid));
+    [Fact]
+    void StrictDecode_does_not_parse_longer_base64_string() {
+        Assert.Throws<ArgumentException>(
+            () => ShortGuid.Decode(LongerBase64String)
+            );
+    }
 
-            // decode should throw
-            Assert.Throws<FormatException>(
-                () => ShortGuid.Decode(InvalidSampleShortGuidString)
-                );
+    [Fact]
+    void invalid_strings_must_not_return_true_on_try_parse_with_strict_true() {
+        // try parse should return false
+        Assert.False(ShortGuid.TryParse(InvalidSampleShortGuidString, out ShortGuid strictSguid));
 
-            // .ctor should throw
-            Assert.Throws<FormatException>(
-                () => new ShortGuid(InvalidSampleShortGuidString)
-                );
-        }
+        // decode should throw
+        Assert.Throws<FormatException>(
+            () => ShortGuid.Decode(InvalidSampleShortGuidString)
+            );
 
-        [Fact]
-        void ctor_throws_when_trying_to_decode_guid_string()
-        {
-            Assert.Throws<ArgumentException>(
-                () => new ShortGuid(SampleGuidString)
-                );
-        }
+        // .ctor should throw
+        Assert.Throws<FormatException>(
+            () => new ShortGuid(InvalidSampleShortGuidString)
+            );
+    }
 
-        [Fact]
-        void TryParse_decodes_shortguid_string()
-        {
-            ShortGuid.TryParse(SampleShortGuidString, out ShortGuid actual);
+    [Fact]
+    void ctor_throws_when_trying_to_decode_guid_string() {
+        Assert.Throws<ArgumentException>(
+            () => new ShortGuid(SampleGuidString)
+            );
+    }
 
-            assert_instance_equals_samples(actual);
-        }
+    [Fact]
+    void TryParse_decodes_shortguid_string() {
+        ShortGuid.TryParse(SampleShortGuidString, out ShortGuid actual);
 
-        [Fact]
-        void TryParse_decodes_guid_string()
-        {
-            ShortGuid.TryParse(SampleGuidString, out ShortGuid actual);
+        assert_instance_equals_samples(actual);
+    }
 
-            assert_instance_equals_samples(actual);
-        }
+    [Fact]
+    void TryParse_decodes_guid_string() {
+        ShortGuid.TryParse(SampleGuidString, out ShortGuid actual);
 
-        [Fact]
-        void TryParse_decodes_empty_guid_literal_as_empty()
-        {
-            bool result = ShortGuid.TryParse(Guid.Empty.ToString(), out ShortGuid actual);
+        assert_instance_equals_samples(actual);
+    }
 
-            Assert.True(result);
-            Assert.Equal(Guid.Empty, actual.Guid);
-        }
+    [Fact]
+    void TryParse_decodes_empty_guid_literal_as_empty() {
+        bool result = ShortGuid.TryParse(Guid.Empty.ToString(), out ShortGuid actual);
 
-        [Fact]
-        void TryParse_decodes_empty_string_as_empty()
-        {
-            bool result = ShortGuid.TryParse(string.Empty, out ShortGuid actual);
+        Assert.True(result);
+        Assert.Equal(Guid.Empty, actual.Guid);
+    }
 
-            Assert.False(result);
-            Assert.Equal(Guid.Empty, actual.Guid);
-        }
+    [Fact]
+    void TryParse_decodes_empty_string_as_empty() {
+        bool result = ShortGuid.TryParse(string.Empty, out ShortGuid actual);
 
-        [Fact]
-        void TryParse_decodes_bad_string_as_empty()
-        {
-            bool result = ShortGuid.TryParse("Nothing to see here...", out ShortGuid actual);
+        Assert.False(result);
+        Assert.Equal(Guid.Empty, actual.Guid);
+    }
 
-            Assert.False(result);
-            Assert.Equal(Guid.Empty, actual.Guid);
-        }
+    [Fact]
+    void TryParse_decodes_bad_string_as_empty() {
+        bool result = ShortGuid.TryParse("Nothing to see here...", out ShortGuid actual);
 
-        [Fact]
-        void Encode_creates_expected_string()
-        {
-            string actual = ShortGuid.Encode(SampleGuid);
+        Assert.False(result);
+        Assert.Equal(Guid.Empty, actual.Guid);
+    }
 
-            Assert.Equal(SampleShortGuidString, actual);
-        }
+    [Fact]
+    void Encode_creates_expected_string() {
+        string actual = ShortGuid.Encode(SampleGuid);
 
-        [Fact]
-        void Decode_takes_expected_string()
-        {
-            Guid actual = ShortGuid.Decode(SampleShortGuidString);
+        Assert.Equal(SampleShortGuidString, actual);
+    }
 
-            Assert.Equal(SampleGuid, actual);
-        }
+    [Fact]
+    void Decode_takes_expected_string() {
+        Guid actual = ShortGuid.Decode(SampleShortGuidString);
 
-        [Fact]
-        void Decode_fails_on_unexpected_string()
-        {
-            Assert.Throws<ArgumentException>(
-                () => ShortGuid.Decode("Am I valid?")
-                );
+        Assert.Equal(SampleGuid, actual);
+    }
 
-            Assert.Throws<FormatException>(
-                () => ShortGuid.Decode("I am 22characters long")
-                );
-        }
+    [Fact]
+    void Decode_fails_on_unexpected_string() {
+        Assert.Throws<ArgumentException>(
+            () => ShortGuid.Decode("Am I valid?")
+            );
 
-        [Fact]
-        void instance_equality_equals()
-        {
-            var actual = new ShortGuid(SampleShortGuidString);
+        Assert.Throws<FormatException>(
+            () => ShortGuid.Decode("I am 22characters long")
+            );
+    }
 
-            Assert.True(actual.Equals(actual));
-            Assert.False(actual.Equals(null));
-            Assert.True(actual.Equals(SampleGuid));
-            Assert.True(actual.Equals(SampleGuidString));
-            Assert.True(actual.Equals(SampleShortGuidString));
-        }
+    [Fact]
+    void instance_equality_equals() {
+        var actual = new ShortGuid(SampleShortGuidString);
 
-        [Fact]
-        void operator_eqaulity_equals()
-        {
-            ShortGuid actual = new ShortGuid(SampleShortGuidString);
+        Assert.True(actual.Equals(actual));
+        Assert.False(actual.Equals(null));
+        Assert.True(actual.Equals(SampleGuid));
+        Assert.True(actual.Equals(SampleGuidString));
+        Assert.True(actual.Equals(SampleShortGuidString));
+    }
+
+    [Fact]
+    void operator_eqaulity_equals() {
+        ShortGuid actual = new ShortGuid(SampleShortGuidString);
 
 #pragma warning disable CS1718 // Comparison made to same variable
-            Assert.True(actual == actual);
+        Assert.True(actual == actual);
 #pragma warning restore CS1718 // Comparison made to same variable
 
-            Assert.False(actual == null);
 
-            Assert.True(actual == SampleGuid);
-            Assert.True(SampleGuid == actual);
+        Assert.True(actual == SampleGuid);
+        Assert.True(SampleGuid == actual);
 
-            Assert.True(actual == SampleGuidString);
-            Assert.True(actual == SampleShortGuidString);
+        Assert.True(actual == SampleGuidString);
+        Assert.True(actual == SampleShortGuidString);
 
-            Assert.True(null == ShortGuid.Empty);
-        }
 
-        [Fact]
-        void ShortGuid_Emtpy_equals_Guid_Empty()
-        {
-            Assert.True(Guid.Empty.Equals(ShortGuid.Empty));
-        }
+    }
+
+    [Fact]
+    void ShortGuid_Emtpy_equals_Guid_Empty() {
+        Assert.True(Guid.Empty.Equals(ShortGuid.Empty));
     }
 }
+
